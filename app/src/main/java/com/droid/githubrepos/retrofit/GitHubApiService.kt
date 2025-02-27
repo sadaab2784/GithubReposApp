@@ -6,7 +6,7 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface GitHubApiService {
-    @GET("users/google/repos")
+    @GET("users/{username}/repos")
     suspend fun getRepositories(
         @Path("username") username: String,
         @Query("page") page: Int,
