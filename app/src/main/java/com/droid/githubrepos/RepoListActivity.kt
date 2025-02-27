@@ -28,20 +28,15 @@ class RepoListActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         // Initialize dependencies
-        val githubService = RetrofitClient.instance // Retrofit instance
-        val repository = GitHubRepository(githubService) // GitHubRepository dependency
-
-        // Create ViewModelFactory
+        val githubService = RetrofitClient.instance
+        val repository = GitHubRepository(githubService)
         val viewModelFactory = RepoViewModelFactory(repository)
-
-        // Obtain ViewModel using the factory
-        viewModel = ViewModelProvider(this, viewModelFactory).get(RepoViewModel::class.java)
+        viewModel = ViewModelProvider(this, viewModelFactory)[RepoViewModel::class.java]
 
         setupRecyclerView()
         observeRepositories()
         observeErrors()
 
-        // Fetch initial data
         viewModel.loadRepositories("google")
     }
 
@@ -54,8 +49,8 @@ class RepoListActivity : AppCompatActivity() {
         binding.recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                if (!recyclerView.canScrollVertically(1)) { // 1 means scrolling down
-                    viewModel.loadRepositories("google") // Fetch the next page
+                if (!recyclerView.canScrollVertically(1)) {
+                    viewModel.loadRepositories("google")
                 }
             }
         })
@@ -63,13 +58,13 @@ class RepoListActivity : AppCompatActivity() {
 
     private fun observeRepositories() {
         viewModel.repositories.observe(this) { repositories ->
-            adapter.updateRepositories(repositories) // Update the adapter with new data
+            adapter.updateRepositories(repositories)
         }
     }
 
     private fun observeErrors() {
         viewModel.errorMessage.observe(this) { error ->
-            Toast.makeText(this, error, Toast.LENGTH_SHORT).show() // Show error message
+            Toast.makeText(this, error, Toast.LENGTH_SHORT).show()
         }
     }
 }
